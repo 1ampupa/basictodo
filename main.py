@@ -1,6 +1,6 @@
 # Libraries
 import datetime
-from lib import initialise as init
+from lib.tasks import Tasks
 
-# Variables
-TasksRefPath = init.Initialise()
+# Create Example Task
+task1 = Tasks()

@@ -3,16 +3,16 @@ import json
 from pathlib import Path
 
 # Constant
-DefaultTasksRefData = {"tasks":[]}
+DefaultTasksRefData = {}
 
 # Create Default tasksref.json file
 def CreateDefaultTasksRefJSON(TasksRefPath):
     with open(TasksRefPath, 'w') as file:
-        json.dump(DefaultTasksRefData, file, indent=4)
+        json.dump(DefaultTasksRefData.copy(), file, indent=4)
     return DefaultTasksRefData
 
 # Init function
-def Initialise():
+def Initialise() -> Path:
     # Get data folder
     DataFolderPath = Path("data")
     DataFolderPath.mkdir(exist_ok=True) # Create if not exist
@@ -29,4 +29,8 @@ def Initialise():
     except (FileNotFoundError, json.JSONDecodeError):
         TasksRefData = CreateDefaultTasksRefJSON(TasksRefPath)
 
-    return TasksRefPath # Return only PATH because its data can be updated anytime.
+    # Get tasks folder
+    DataFolderPath = Path("data/tasks")
+    DataFolderPath.mkdir(exist_ok=True, parents=True) # Create if not exist
+
+    return TasksRefPath, DataFolderPath # Return only PATH because its data can be updated anytime.

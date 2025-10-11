@@ -1,13 +1,28 @@
-BASICTODO Testing 1 by 1ampupa
+# BASICTODO 📝
+VERSION Testing 1 by 1ampupa
 
-a simple to do list written in Python
+a simple to-do list written in Python
 
--- Features
-- Command line Program
+---
 
--- Commands List
+## 🌸 Features
+- Command-line based  
+- Lightweight and (hopefully) functional  
 
--- Disclaimer
-Dear Python programmers,
-I know I use PascalCase for variables name not the Snake-case you familar with,
-so please dont boom me :D
+---
+
+## 💻 Commands List
+none yet 😭 work in progress ok  
+
+---
+
+## ⚠️ Disclaimer
+dear python devs,  
+i know my naming convention is cursed.  
+it’s not snake_case, it’s chaotic_energy_case 😭  
+so pls don’t bomb me, ty 🙏  
+
+this repo is basic. my skills are basic.  
+but at least... it runs (probably).
+
+- 1ampupa
