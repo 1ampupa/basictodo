@@ -28,13 +28,13 @@ class Tasks:
         self.id = TaskId
         self.name = TaskName
         self.due = TaskDue
-        self.path = f'{Tasks.TasksFolderPath}/{self.id}.json'
+        self.path = f'{Tasks.TasksFolderPath}\\{self.id}.json'
 
         Tasks._TaskIdIndexCounter += 1
 
         # Create reference into Task Dictionary
         Tasks.TasksDict[TaskId] = self.path
-
+        
         # TODO Create Task .json file
         with open(self.path, 'w') as file:
             json.dump({}, file, indent=4)
