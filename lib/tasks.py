@@ -20,19 +20,16 @@ class Task:
         if _TasksRefPath is None or _TasksFolderPath is None:
             _TasksRefPath, _TasksFolderPath = Initialise()
 
-        # Check Arguments and assign Task's properties
-        if TaskId is None:
-            TaskId = f'Task{_TaskIdIndexCounter}'
-        if TaskName is None:
-            TaskName = f'Task {_TaskIdIndexCounter}'
-        if TaskDue is None:
-            pass
+        # Check Arguments and assign Task"s properties
+        TaskId = TaskId or f"Task{_TaskIdIndexCounter}"
+        TaskName = TaskName or f"Task {_TaskIdIndexCounter}"
+        TaskDue = TaskDue or None
         
         # Construct Task
         self.id = TaskId
         self.name = TaskName
         self.due = TaskDue
-        self.path = f'{_TasksFolderPath}\\{self.id}.json'
+        self.path = f"{_TasksFolderPath}\\{self.id}.json"
 
         _TaskIdIndexCounter += 1
 
@@ -46,7 +43,7 @@ class Task:
         }
 
         # Create Task.json file
-        with open(self.path, 'w') as file:
+        with open(self.path, "w") as file:
             json.dump(TaskData, file, indent=4)
 
         # Update Task reference from Tasks list
@@ -56,9 +53,12 @@ class Task:
 
 def _UpdateTasksRef() -> None:
     global _TasksRefPath
-    with open(_TasksRefPath,'w+') as file:
+    with open(_TasksRefPath,"w+") as file:
         json.dump(TasksDict.copy(), file, indent=4)
-    
+
+# Public Functions   
+
 def GetTaskData(Task: Task) -> dict:
-    _Data = json.load(open(TasksDict[Task.id]))
+    with open(TasksDict[Task.id], "r") as file:
+        _Data = json.load(file)
     return _Data
