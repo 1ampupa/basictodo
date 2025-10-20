@@ -58,18 +58,31 @@ class DateTime:
             print(_E)
 
     # Date Time Comparation Functions
-    def DiffWithDateTime(self, _OtherDatetime : datetime, _Unit : str) -> int:
-        _Diff = self.now - _OtherDatetime
-        _Diff_In_Seconds = _Diff.total_seconds()
+    def DiffWithDateTime(self, _OtherDatetime : datetime, _Unit : str) -> tuple:
+        _DateTimeDiff = self.now - _OtherDatetime
+        _Diff_In_Seconds = _DateTimeDiff.total_seconds()
+        _Difference = 0
+        
+        # Unit Comparation
 
         match _Unit.lower():
-            case "seconds": return int(_Diff_In_Seconds)
-            case "minutes": return int(_Diff_In_Seconds // 60)
-            case "hours": return int(_Diff_In_Seconds // 3600)
-            case "days": return _Diff.days
+            case "seconds": _Difference = int(_Diff_In_Seconds)
+            case "minutes": _Difference = int(_Diff_In_Seconds // 60)
+            case "hours": _Difference = int(_Diff_In_Seconds // 3600)
+            case "days": _Difference = _DateTimeDiff.days
             case _:
                 print("Error in function 'DateTime.DiffWithDateTime': Invalid unit received. Return day difference.")
-                return _Diff.days
+                _Difference = _DateTimeDiff.days
+        
+        # Compare
+        if _Difference == 0:
+            _Status = "Exact"
+        elif _Difference > 0:
+            _Status = "Ahead"
+        elif _Difference < 0:
+            _Status = "Behind"
+
+        return _Difference, _Status
 
     def __str__(self):
         return f"{self.fullTime} {self.fullDate}"
