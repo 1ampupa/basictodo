@@ -23,12 +23,28 @@ class DateTime:
         self.fullDate : date = date(year=self.year, month=self.month, day=self.date)
         self.fullTime : time = time(hour=self.hour, minute=self.minute, second=self.second)
 
-    def GetNowAsString(self, IncludeSecond: bool) -> str:
+    # Query Functions
+
+    def GetNowAsString(self, IncludeSecond : bool) -> str:
         if IncludeSecond:
             return self.now.strftime(DateTime._FullTimeFormat)
         return self.now.strftime(DateTime._TimeFormat)
     
-    
+    # Date Time Calculation Functions
+
+    def Add(self, attribute : str, value : int) -> datetime:
+        try:
+            _New_Time = self.now + timedelta(**{attribute:value})
+            return _New_Time
+        except Exception as _E:
+            print(_E)
+
+    def Subtract(self, attribute : str, value : int) -> datetime:
+        try:
+            _New_Time = self.now - timedelta(**{attribute:value})
+            return _New_Time
+        except Exception as _E:
+            print(_E)
 
     def __str__(self):
         return f"{self.fullTime} {self.fullDate}"
