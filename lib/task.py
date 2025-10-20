@@ -2,30 +2,42 @@ import json
 
 from lib.initialise import Initialise
 
+from pathlib import Path
+
+from typing import Optional
+
+from datetime import datetime
+
 # Task Instance
 
 class Task:
     # Class Variables
-    _TasksDict = {}
-    _TaskIdIndexCounter = 1
-    _TasksRefPath = None
-    _TasksFolderPath = None
+    _TasksDict : dict = {}
+    _TaskIdIndexCounter : int = 1
+    _TasksRefPath : Path = None
+    _TasksFolderPath : Path = None
 
     # Constructor
-    def __init__(self, TaskId=None, TaskName=None, TaskDue=None) -> None:
+    def __init__(self, TaskName : Optional[str], TaskDue : Optional[datetime]) -> None:
         # Check for TasksRefPath and TasksFolderPath
         Task._CheckPath()
 
         # Check Arguments and assign Task properties
-        TaskId, TaskName, TaskDue = Task._CheckArgs(TaskId, TaskName, TaskDue)
+        TaskName, TaskDue = Task._CheckArgs(
+            TaskName, TaskDue
+        )
 
         # Construct Task
-        self.id = TaskId
-        self.name = TaskName
-        self.due = TaskDue
-        self.path = Task._TasksFolderPath / f"{self.id}.json"
+        self.id : str = f"Task{Task._TaskIdIndexCounter}"
+        self.name : str = TaskName
+        self.due : datetime = TaskDue
+        self.status : str = "Incomplete"
+        self.path : Path = Task._TasksFolderPath / f"{self.id}.json"
 
         Task._TaskIdIndexCounter += 1
+
+        # Create reference into Task Dictionary
+        Task._TasksDict[self.id] = str(self.path)
 
         # Create Task JSON file
         Task._CreateTaskJSON(self)
@@ -40,20 +52,17 @@ class Task:
             Task._TasksRefPath, Task._TasksFolderPath = Initialise()
 
     @staticmethod
-    def _CheckArgs(TaskId, TaskName, TaskDue) -> list:
-        TaskId = TaskId or f"Task{Task._TaskIdIndexCounter}"
-        TaskName = TaskName or f"Task {Task._TaskIdIndexCounter}"
-        TaskDue = TaskDue or None
-        return TaskId, TaskName, TaskDue
+    def _CheckArgs(TaskName, TaskDue) -> list:
+        TaskName : str = TaskName or f"Untitled Task {Task._TaskIdIndexCounter}"
+        TaskDue : datetime = TaskDue or "No deadline"
+        return TaskName, TaskDue
     
     def _CreateTaskJSON(self) -> None:
-        # Create reference into Task Dictionary
-        Task._TasksDict[self.id] = str(self.path)
-        
         # Create Task.json data
-        TaskData = {
+        TaskData : dict = {
             "name": self.name,
-            "due": str(self.due)
+            "due": str(self.due),
+            "status": self.status
         }
 
         # Create Task.json file
