@@ -1,5 +1,5 @@
 # BASICTODO 📝
-VERSION Testing 1 by 1ampupa
+VERSION Testing 2 by 1ampupa
 
 a simple to-do list written in Python
 
@@ -25,4 +25,4 @@ so pls don’t bomb me, ty 🙏
 this repo is basic. my skills are basic.  
 but at least... it runs (probably).
 
-- 1ampupa
+-- 1ampupa

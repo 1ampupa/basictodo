@@ -6,7 +6,7 @@ from pathlib import Path
 DefaultTasksRefData = {}
 
 # Create Default tasksref.json file
-def CreateDefaultTasksRefJSON(TasksRefPath):
+def CreateDefaultTasksRefJSON(TasksRefPath) -> dict:
     with open(TasksRefPath, 'w') as file:
         json.dump(DefaultTasksRefData.copy(), file, indent=4)
     return DefaultTasksRefData
