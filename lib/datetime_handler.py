@@ -1,16 +1,17 @@
 from datetime import datetime, date, time, timedelta
+from typing import Optional
 
 class DateTime:
     # Class Variables
 
     # Format Config
-    _DateFormat : str = "%d/%m/%Y"
-    _FullDateFormat : str = "%A %d/%m/%Y"
-    _TimeFormat : str = "%H:%M"
-    _FullTimeFormat : str = "%H:%M:%S"
+    _date_format : str = "%d/%m/%Y"
+    _full_date_format : str = "%A %d/%m/%Y"
+    _time_format : str = "%H:%M"
+    _full_time_format : str = "%H:%M:%S"
 
     # Constructor
-    def __init__(self, DateTime: datetime = None):
+    def __init__(self, DateTime: Optional[datetime] = None):
         self.now : datetime = DateTime or datetime.now()
 
         self.year : int = int(self.now.strftime("%Y"))
@@ -21,56 +22,56 @@ class DateTime:
         self.minute : int = int(self.now.strftime("%M"))
         self.second : int = int(self.now.strftime("%S"))
 
-        self.fullDate : str = date(year=self.year, month=self.month, day=self.date).isoformat()
-        self.fullTime : str = time(hour=self.hour, minute=self.minute, second=self.second).isoformat()
+        self.full_date : str = date(year=self.year, month=self.month, day=self.date).isoformat()
+        self.full_time : str = time(hour=self.hour, minute=self.minute, second=self.second).isoformat()
 
     # Query Functions
 
-    def GetNowAsString(self, IncludeSeconds : bool = False) -> str:
-        if not isinstance(IncludeSeconds, bool): 
-            return self.now.strftime(DateTime._TimeFormat)
-        if IncludeSeconds:
-            return self.now.strftime(DateTime._FullTimeFormat)
-        return self.now.strftime(DateTime._TimeFormat)
+    def get_now_as_string(self, include_seconds : bool = False) -> str:
+        if not isinstance(include_seconds, bool): 
+            return self.now.strftime(DateTime._time_format)
+        if include_seconds:
+            return self.now.strftime(DateTime._full_time_format)
+        return self.now.strftime(DateTime._time_format)
     
-    def GetTodayAsString(self, IncludeWeekday : bool = False) -> str:
-        if not isinstance(IncludeWeekday, bool): 
-            return self.now.strftime(DateTime._DateFormat)
-        if IncludeWeekday:
-            return self.now.strftime(DateTime._FullDateFormat)
-        return self.now.strftime(DateTime._DateFormat)
+    def get_today_as_string(self, include_weekday : bool = False) -> str:
+        if not isinstance(include_weekday, bool): 
+            return self.now.strftime(DateTime._date_format)
+        if include_weekday:
+            return self.now.strftime(DateTime._full_time_format)
+        return self.now.strftime(DateTime._date_format)
     
-    def GetDateTimeAsDict(self) -> dict:
+    def from_DateTime_to_dict(self) -> dict:
         return {
-            "date": self.fullDate,
-            "time": self.fullTime
+            "date": self.full_date,
+            "time": self.full_time
         }
     
     @staticmethod
-    def FromDictToDateTime(DateTimeDict : dict) -> DateTime:
-        if "date" not in DateTimeDict or "time" not in DateTimeDict:
-            return False
-        DateTimeDict = DateTime(datetime.fromisoformat(f"{DateTimeDict["date"]}T{DateTimeDict["time"]}"))
-        return DateTimeDict
+    def from_dict_to_DateTime(date_time_dict : dict) -> DateTime:
+        if "date" not in date_time_dict or "time" not in date_time_dict:
+            raise ValueError
+        new_date_time = DateTime(datetime.fromisoformat(f"{date_time_dict["date"]}T{date_time_dict["time"]}"))
+        return new_date_time
     
     # Date Time Calculation Functions
 
-    def Add(self, **kwargs) -> DateTime:
+    def add(self, **kwargs) -> DateTime:
         try:
             New_DateTime = self.now + timedelta(**kwargs)
             return DateTime(New_DateTime)
         except Exception:
-            return False
+            raise ValueError
 
-    def Subtract(self, **kwargs) -> DateTime:
+    def subtract(self, **kwargs) -> DateTime:
         try:
             New_DateTime = self.now - timedelta(**kwargs)
             return DateTime(New_DateTime)
         except Exception:
-            return False
+            raise ValueError
 
     # Date Time Comparation Functions
-    def DiffWithDateTime(self, OtherDatetime : DateTime, Unit : str) -> tuple:
+    def diff_with_DateTime(self, OtherDatetime : DateTime, Unit : str) -> tuple:
         DateTimeDifference : timedelta = self.now - OtherDatetime.now
         Difference : int = 0
         Status : str = ""
@@ -98,4 +99,4 @@ class DateTime:
         return Status, Difference
 
     def __str__(self):
-        return f"{self.fullDate}T{self.fullTime}"
+        return f"{self.full_date}T{self.full_time}"

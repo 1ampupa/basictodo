@@ -1,80 +1,77 @@
 import json
 
-from lib.initialise import Initialise
+from lib.initialise import initialise
+from lib.datetime_handler import DateTime
 
 from pathlib import Path
-
 from typing import Optional
-
 from datetime import datetime
 
 # Task Instance
 
 class Task:
     # Class Variables
-    _TasksDict : dict = {}
-    _TaskIdIndexCounter : int = 1
-    _TasksRefPath : Path = None
-    _TasksFolderPath : Path = None
+    _tasks_dict : dict[str, str] = {}
+    _task_id_index_counter : int = 1
+    _tasks_ref_path : Path = Path()
+    _tasks_folder_path : Path = Path()
 
     # Constructor
-    def __init__(self, TaskName : Optional[str], TaskDue : Optional[datetime]) -> None:
+    def __init__(self, task_name : Optional[str], task_due : Optional[DateTime]) -> None:
         # Check for TasksRefPath and TasksFolderPath
-        Task._CheckPath()
+        Task._check_path()
 
         # Check Arguments and assign Task properties
-        TaskName, TaskDue = Task._CheckArgs(
-            TaskName, TaskDue
-        )
+        checked_name, checked_due = Task._check_arguments(task_name, task_due)
 
         # Construct Task
-        self.id : str = f"Task{Task._TaskIdIndexCounter}"
-        self.name : str = TaskName
-        self.due : datetime = TaskDue
+        self.id : str = f"Task{Task._task_id_index_counter}"
+        self.name : str = checked_name
         self.status : str = "Incomplete"
-        self.path : Path = Task._TasksFolderPath / f"{self.id}.json"
+        self.due : DateTime | str = checked_due or "No Deadline."
+        self.path : Path = Task._tasks_folder_path / f"{self.id}.json"
 
-        Task._TaskIdIndexCounter += 1
+        Task._task_id_index_counter += 1
 
         # Create reference into Task Dictionary
-        Task._TasksDict[self.id] = str(self.path)
+        Task._tasks_dict[self.id] = str(self.path)
 
         # Create Task JSON file
-        Task._CreateTaskJSON(self)
+        Task._create_task_as_JSON(self)
 
         # Update Task reference from Tasks list
-        Task._UpdateTasksRef()
+        Task._update_tasks_ref()
     
     # Class Functions
     @staticmethod
-    def _CheckPath() -> None:
-        if Task._TasksRefPath is None or Task._TasksFolderPath is None:
-            Task._TasksRefPath, Task._TasksFolderPath = Initialise()
+    def _check_path() -> None:
+        if not Task._tasks_ref_path.is_file() or not Task._tasks_folder_path.is_dir():
+            Task._tasks_ref_path, Task._tasks_folder_path = initialise()
 
     @staticmethod
-    def _CheckArgs(TaskName, TaskDue) -> list:
-        TaskName : str = TaskName or f"Untitled Task {Task._TaskIdIndexCounter}"
-        TaskDue : datetime = TaskDue or "No deadline"
-        return TaskName, TaskDue
+    def _check_arguments(task_name : str|None, task_due : DateTime|None) -> tuple[str, DateTime|None]:
+        task_name = task_name or f"Untitled Task {Task._task_id_index_counter}"
+        task_due = task_due or None
+        return task_name, task_due
     
-    def _CreateTaskJSON(self) -> None:
+    def _create_task_as_JSON(self) -> None:
         # Create Task.json data
-        TaskData : dict = {
+        task_data : dict = {
             "name": self.name,
-            "due": str(self.due),
-            "status": self.status
+            "status": self.status,
+            "due": str(self.due)
         }
 
         # Create Task.json file
         with open(self.path, "w") as file:
-            json.dump(TaskData, file, indent=4)
+            json.dump(task_data, file, indent=4)
 
     @classmethod
-    def _UpdateTasksRef(cls) -> None:
-        with open(cls._TasksRefPath,"w+") as file:
-            json.dump(cls._TasksDict.copy(), file, indent=4)
+    def _update_tasks_ref(cls) -> None:
+        with open(cls._tasks_ref_path,"w+") as file:
+            json.dump(cls._tasks_dict.copy(), file, indent=4)
 
-    def GetTaskData(self) -> dict:
+    def get_task_data(self) -> dict:
         with open(self.path, "r") as file:
-            _Data = json.load(file)
-        return _Data
+            data = json.load(file)
+        return data
