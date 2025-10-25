@@ -28,7 +28,7 @@ class Task:
         self.id : str = f"Task{Task._task_id_index_counter}"
         self.name : str = checked_name
         self.status : str = "Incomplete"
-        self.due : DateTime | str = checked_due or "No Deadline."
+        self.due : DateTime | None = checked_due or None
         self.path : Path = Task._tasks_folder_path / f"{self.id}.json"
 
         Task._task_id_index_counter += 1
@@ -59,7 +59,7 @@ class Task:
         task_data : dict = {
             "name": self.name,
             "status": self.status,
-            "due": str(self.due)
+            "due": str(self.due) if self.due else None
         }
 
         # Create Task.json file
