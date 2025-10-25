@@ -3,34 +3,31 @@ import json
 from pathlib import Path
 
 # Constant
-_default_tasks_ref_data = {}
+_default_tasks_ref_data = {"tasks": []}
 
 # Create Default tasksref.json file
-def create_default_tasks_ref_JSON(_tasks_ref_path: Path) -> dict:
-    with open(_tasks_ref_path, 'w') as file:
+def create_default_tasks_ref_JSON(tasks_ref_path: Path) -> dict:
+    with open(tasks_ref_path, 'w') as file:
         json.dump(_default_tasks_ref_data.copy(), file, indent=4)
     return _default_tasks_ref_data
 
 # Init function
 def initialise() -> tuple[Path, Path]:
     # Get data folder
-    _data_folder_path : Path = Path("data")
-    _data_folder_path.mkdir(exist_ok=True) # Create if not exist
+    data_folder_path : Path = Path("data")
+    data_folder_path.mkdir(exist_ok=True) # Create if not exist
 
     # Get taskref.json
-    _tasks_ref_path = _data_folder_path / "tasksref.json"
+    tasks_ref_path = data_folder_path / "tasksref.json"
 
     try: # Check if tasksref.json is empty or not
-        with open(_tasks_ref_path, 'r') as file:
-            tasks_ref_data = json.load(file)
-        # Check tasksref.json
-        if "tasks" not in tasks_ref_data or not isinstance(tasks_ref_data["tasks"], list):
-            tasks_ref_data = create_default_tasks_ref_JSON(_tasks_ref_path)
+        with open(tasks_ref_path, 'r') as file:
+            json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
-        tasks_ref_data = create_default_tasks_ref_JSON(_tasks_ref_path)
+        create_default_tasks_ref_JSON(tasks_ref_path)
 
     # Get tasks folder
-    _tasks_folder_path : Path = Path("data/tasks")
-    _tasks_folder_path.mkdir(exist_ok=True, parents=True) # Create if not exist
+    tasks_folder_path : Path = Path("data/tasks")
+    tasks_folder_path.mkdir(exist_ok=True, parents=True) # Create if not exist
 
-    return _tasks_ref_path, _tasks_folder_path # Return only PATH because its data can be updated anytime.
+    return tasks_ref_path, tasks_folder_path # Return only PATH because its data can be updated anytime.

@@ -38,7 +38,7 @@ class DateTime:
         if not isinstance(include_weekday, bool): 
             return self.now.strftime(DateTime._date_format)
         if include_weekday:
-            return self.now.strftime(DateTime._full_time_format)
+            return self.now.strftime(DateTime._full_date_format)
         return self.now.strftime(DateTime._date_format)
     
     def from_DateTime_to_dict(self) -> dict:
@@ -51,52 +51,52 @@ class DateTime:
     def from_dict_to_DateTime(date_time_dict : dict) -> DateTime:
         if "date" not in date_time_dict or "time" not in date_time_dict:
             raise ValueError
-        new_date_time = DateTime(datetime.fromisoformat(f"{date_time_dict["date"]}T{date_time_dict["time"]}"))
+        new_date_time = DateTime(datetime.fromisoformat(f"{date_time_dict['date']}T{date_time_dict['time']}"))
         return new_date_time
     
     # Date Time Calculation Functions
 
     def add(self, **kwargs) -> DateTime:
         try:
-            New_DateTime = self.now + timedelta(**kwargs)
-            return DateTime(New_DateTime)
+            new_date_time = self.now + timedelta(**kwargs)
+            return DateTime(new_date_time)
         except Exception:
             raise ValueError
 
     def subtract(self, **kwargs) -> DateTime:
         try:
-            New_DateTime = self.now - timedelta(**kwargs)
-            return DateTime(New_DateTime)
+            new_date_time = self.now - timedelta(**kwargs)
+            return DateTime(new_date_time)
         except Exception:
             raise ValueError
 
     # Date Time Comparation Functions
-    def diff_with_DateTime(self, OtherDatetime : DateTime, Unit : str) -> tuple:
-        DateTimeDifference : timedelta = self.now - OtherDatetime.now
-        Difference : int = 0
-        Status : str = ""
+    def diff_with_DateTime(self, other_Date_Time : DateTime, unit : str) -> tuple:
+        date_time_difference : timedelta = self.now - other_Date_Time.now
+        difference : int = 0
+        status : str = ""
 
-        match Unit.lower():
+        match unit.lower():
             case "days":
-                Difference = int(DateTimeDifference.total_seconds() / 864000)
+                difference = date_time_difference.days
             case "hours":
-                Difference = int(DateTimeDifference.total_seconds() / 3600)
+                difference = int(date_time_difference.total_seconds() / 3600)
             case "minutes":
-                Difference = int(DateTimeDifference.total_seconds() / 60)
+                difference = int(date_time_difference.total_seconds() / 60)
             case "seconds":
-                Difference = int(DateTimeDifference.total_seconds())
+                difference = int(date_time_difference.total_seconds())
             case _:
-                Difference = int(DateTimeDifference.total_seconds() / 864000)
+                difference = date_time_difference.days
         
         # Compare
-        if Difference == 0:
-            Status = "Exact"
-        elif Difference > 0:
-            Status = "Ahead"
-        elif Difference < 0:
-            Status = "Behind"
+        if difference == 0:
+            status = "Exact"
+        elif difference > 0:
+            status = "Ahead"
+        elif difference < 0:
+            status = "Behind"
 
-        return Status, Difference
+        return status, difference
 
     def __str__(self):
         return f"{self.full_date}T{self.full_time}"

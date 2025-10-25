@@ -68,7 +68,7 @@ class Task:
 
     @classmethod
     def _update_tasks_ref(cls) -> None:
-        with open(cls._tasks_ref_path,"w+") as file:
+        with open(cls._tasks_ref_path,"w") as file:
             json.dump(cls._tasks_dict.copy(), file, indent=4)
 
     def get_task_data(self) -> dict:
